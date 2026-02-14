@@ -3,184 +3,141 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Top 5 Reasons You're Mine — Poetic</title>
+  <title>Top 5 Reasons You're Mine ... Poetic + Receipt</title>
 
-  <!-- Fonts: Playfair Display (serif) + Inter (sans) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
   <style>
-    /* ========== Design tokens (mellow pinkish-maroon scheme) ========== */
+    /* ===== Design tokens ===== */
     :root{
-      --bg-canvas: #F4EBED;        /* soft ivory/blush */
-      --card-bg:  #FFF8F8;         /* near-white warm */
-      --accent-maroon: #7A2430;    /* deep maroon (accent) */
-      --accent-dust: #C77B7B;      /* dusty-rose secondary */
-      --muted-char: #332827;       /* dark text */
-      --muted-taupe: #D9CBC8;      /* soft neutrals for lines */
-      --grain: rgba(122,36,48,0.04);
-      --font-serif: 'Playfair Display', serif;
-      --font-sans: 'Inter', sans-serif;
-      --easing: cubic-bezier(0.22,1,0.36,1);
-      --radius: 8px;
+      --bg-canvas:#F4EBED;
+      --card-bg:#FFF8F8;
+      --accent-maroon:#7A2430;
+      --accent-dust:#C77B7B;
+      --muted-char:#332827;
+      --muted-taupe:#D9CBC8;
+      --font-serif:'Playfair Display', serif;
+      --font-sans:'Inter', sans-serif;
+      --easing:cubic-bezier(0.22,1,0.36,1);
     }
 
-    /* ========== Reset ========== */
+    /* ===== Reset ===== */
     *{box-sizing:border-box;margin:0;padding:0}
     html,body{height:100%}
     body{
       background: radial-gradient(circle at 10% 10%, #fbf6f7 0%, var(--bg-canvas) 45%), var(--bg-canvas);
-      font-family:var(--font-sans);
-      color:var(--muted-char);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      padding:24px;
-      overflow:hidden;
+      font-family:var(--font-sans); color:var(--muted-char);
+      display:flex; align-items:center; justify-content:center; padding:24px; -webkit-font-smoothing:antialiased;
     }
 
-    /* subtle paper grain overlay */
-    .grain{
-      position:fixed; inset:0; pointer-events:none; z-index:50;
-      background-image: radial-gradient(circle, rgba(255,255,255,0.6) 0%, transparent 8%),
-                        linear-gradient(transparent, rgba(0,0,0,0.02));
+    /* grain / overlay */
+    .grain{ position:fixed; inset:0; pointer-events:none; z-index:50; opacity:0.9;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.6) 0%, transparent 8%), linear-gradient(transparent, rgba(0,0,0,0.02));
       mix-blend-mode:overlay;
-      opacity:0.9;
     }
-    .noise-overlay{
-      position:fixed; inset:0; pointer-events:none; z-index:51;
+    .noise-overlay{ position:fixed; inset:0; pointer-events:none; z-index:51; opacity:0.22;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' fill='%23ffffff' opacity='0.02'/%3E%3C/svg%3E");
-      opacity:0.22;
     }
 
-    /* ========== Card ========== */
+    /* ===== Card ===== */
     .card{
-      width:100%;
-      max-width:460px;
-      height:calc(100vh - 48px);
-      max-height:880px;
-      background: linear-gradient(180deg, var(--card-bg) 0%, #fffefe 100%);
-      border-radius: 14px;
-      box-shadow: 0 30px 60px rgba(44,31,31,0.09);
-      padding:72px 36px;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      position:relative;
-      overflow:hidden;
-      cursor:pointer;
-      transition: transform .12s ease;
+      width:100%; max-width:480px; height:calc(100vh - 48px); max-height:900px;
+      background: linear-gradient(180deg, var(--card-bg) 0%, #fffefe 100%); border-radius:14px;
+      box-shadow:0 30px 60px rgba(44,31,31,0.09); padding:72px 36px; position:relative; overflow:hidden;
+      display:flex; flex-direction:column; justify-content:space-between; transition: transform .12s ease; cursor:pointer;
       border: 1px solid rgba(122,36,48,0.06);
     }
-    .card:active{ transform: scale(.995) }
+    .card:active{ transform:scale(.995) }
+    @media(min-width:900px){ .card{ height:80vh; padding:80px; border-radius:16px } }
 
-    @media (min-width:900px){
-      .card{ height:80vh; border-radius:16px; padding:80px; }
-    }
-
-    /* top pagination */
-    .pagination{
-      position:absolute; right:28px; top:26px; font-family:var(--font-sans);
-      font-weight:500; font-size:13px; color:var(--muted-char); opacity:0;
-      transition:opacity .45s var(--easing);
-      letter-spacing: .08em;
+    /* pagination */
+    .pagination{ position:absolute; right:28px; top:26px; font-family:var(--font-sans);
+      font-weight:500; font-size:13px; color:var(--muted-char); opacity:0; transition:opacity .45s var(--easing); letter-spacing:.08em;
     }
     .pagination .pg-current{ color:var(--accent-maroon); font-weight:700 }
 
-    /* watermark big number behind text */
-    .watermark{
-      position:absolute; left:-8px; top:10%;
-      font-family:var(--font-serif); font-weight:700;
-      font-size:132px; color:var(--muted-taupe);
-      opacity:0; transform: translateY(12px);
-      pointer-events:none; z-index:1;
+    /* watermark */
+    .watermark{ position:absolute; left:-8px; top:10%; font-family:var(--font-serif); font-weight:700;
+      font-size:132px; color:var(--muted-taupe); opacity:0; transform:translateY(12px); pointer-events:none; z-index:1;
+      transition:all .6s var(--easing);
     }
 
     /* content */
-    .content {
-      flex:1; display:flex; align-items:center; justify-content:center; position:relative; z-index:10;
-    }
-    .content-inner{
-      width:100%;
-      max-width:780px;
-      text-align:center;
-      margin: 0 auto;
-      padding: 12px 6px;
-      position:relative;
-    }
+    .content{ flex:1; display:flex; align-items:center; justify-content:center; position:relative; z-index:10 }
+    .content-inner{ width:100%; max-width:780px; text-align:center; margin:0 auto; padding:12px 6px; position:relative }
 
-    /* Title / cover */
-    .label{
-      display:block; font-family:var(--font-sans); font-size:12px; letter-spacing:.18em;
-      text-transform:uppercase; color:var(--muted-char); margin-bottom:18px;
-    }
-    h1{
-      font-family:var(--font-serif); font-weight:400; font-size:52px; line-height:1.02; color:var(--accent-maroon);
-      margin-bottom:18px; text-align:center;
-    }
-    h1 .italic{ font-style:italic; display:inline-block; color:var(--accent-maroon) }
-
+    .label{ display:block; font-family:var(--font-sans); font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted-char); margin-bottom:18px; }
+    h1{ font-family:var(--font-serif); font-weight:400; font-size:52px; line-height:1.02; color:var(--accent-maroon); margin-bottom:18px; text-align:center }
+    h1 .italic{ font-style:italic; color:var(--accent-maroon) }
     .deco-line{ width:2px; height:64px; background:var(--muted-taupe); margin:20px auto; opacity:.9 }
 
-    /* Reason text (poetic) */
-    .reason-text{
-      font-family:var(--font-serif); font-size:20px; line-height:1.6;
-      color:var(--muted-char); max-width:84%; margin: 0 auto;
-      text-align:var(--align, left);
-      white-space:pre-wrap;
-      letter-spacing: .002em;
-      opacity:0; transform:translateY(18px);
-      transition: all 0.6s var(--easing);
-    }
+    .reason-text{ font-family:var(--font-serif); font-size:20px; line-height:1.6; color:var(--muted-char); max-width:84%; margin:0 auto; text-align:var(--align,left); white-space:pre-wrap; opacity:0; transform:translateY(18px); transition:all .6s var(--easing) }
 
-    /* small footer */
-    .footer{
-      text-align:center; font-size:12px; font-family:var(--font-sans);
-      color:var(--muted-char); margin-top:28px; letter-spacing:.14em;
-    }
-    .hint{ font-size:11px; opacity:.6; margin-top:6px; animation:pulse 2.2s infinite; }
+    .footer{ text-align:center; font-size:12px; font-family:var(--font-sans); color:var(--muted-char); margin-top:28px; letter-spacing:.14em }
+    .hint{ font-size:11px; opacity:.6; margin-top:6px; animation:pulse 2.2s infinite }
+    @keyframes pulse{ 0%{opacity:0.28} 50%{opacity:0.85} 100%{opacity:0.28} }
 
-    @keyframes pulse{
-      0%{opacity:0.28} 50%{opacity:0.85} 100%{opacity:0.28}
-    }
-
-    /* entrance animations */
+    /* entrance */
     .animate-in{ animation: fadeInUp .8s var(--easing) forwards; opacity:0 }
     .fade-out{ animation: fadeOut .35s ease forwards }
     @keyframes fadeInUp{ from{opacity:0; transform:translateY(18px)} to{opacity:1; transform:none} }
     @keyframes fadeOut{ from{opacity:1} to{opacity:0; transform:translateY(-8px)} }
 
-    /* hearts container (for slide 03) */
-    .hearts {
-      position:absolute; inset:0; pointer-events:none; z-index:5; overflow:hidden;
+    /* slide transition: subtle scale/fade for the whole content */
+    .content-transition-enter{ opacity:0; transform:translateY(8px) scale(.997) }
+    .content-transition-enter-active{ opacity:1; transform:none; transition:all .48s var(--easing) }
+    .content-transition-exit{ opacity:1 } 
+    .content-transition-exit-active{ opacity:0; transform:translateY(-8px); transition:all .28s var(--easing) }
+
+    /* floating decorative dot */
+    .float-dot{ position:absolute; width:14px; height:14px; border-radius:50%; background:var(--accent-dust); opacity:0.08; top:18%; right:12%; transform:translateY(0) ; animation: floaty 6s ease-in-out infinite; }
+    @keyframes floaty{ 0%{transform:translateY(0)} 50%{transform:translateY(-18px)} 100%{transform:translateY(0)} }
+
+    /* hearts for slide 3 */
+    .hearts{ position:absolute; inset:0; pointer-events:none; z-index:5; overflow:hidden }
+    .heart{ position:absolute; font-size:22px; will-change:transform,opacity; animation: drift 4s linear infinite; opacity:0; transform:translateY(20px) scale(.7); filter:drop-shadow(0 6px 18px rgba(122,36,48,0.18)) }
+    @keyframes drift{ 0%{opacity:0; transform:translateY(8px) scale(.6) rotate(0deg)} 10%{opacity:1} 60%{transform:translateY(-160px) scale(1.05) rotate(8deg); opacity:0.95} 100%{opacity:0; transform:translateY(-360px) scale(.9) rotate(-6deg)} }
+
+    /* doodle svg container */
+    .doodle-wrap{ width:220px; height:220px; margin:16px auto 6px; display:block; }
+    .doodle-svg{ width:100%; height:100%; display:block; overflow:visible }
+
+    /* draw animation (stroke) */
+    .path-draw{ stroke:var(--accent-maroon); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; fill:none; stroke-dasharray:1000; stroke-dashoffset:1000; animation: draw 2.4s ease forwards; }
+    .path-fill{ fill:var(--accent-dust); fill-opacity:0; animation: fillIn 0.6s 2.2s forwards; }
+    @keyframes draw{ to{ stroke-dashoffset:0 } }
+    @keyframes fillIn{ to{ fill-opacity:0.95 } }
+
+    /* receipt modal-ish slide elements */
+    .receipt{
+      width:100%; max-width:420px; margin:0 auto; padding:20px; border-radius:10px; background:linear-gradient(180deg,#fff 0%, #fffefc 100%);
+      border:1px solid rgba(122,36,48,0.06); box-shadow:0 20px 50px rgba(44,31,31,0.06); text-align:left; font-family:var(--font-sans);
     }
-    .heart {
-      position:absolute; font-size:22px; will-change:transform,opacity;
-      animation: drift 4s linear infinite;
-      opacity:0;
-      transform: translateY(20px) scale(.7);
-      filter: drop-shadow(0 6px 18px rgba(122,36,48,0.18));
+    .receipt h3{ font-family:var(--font-serif); color:var(--accent-maroon); margin-bottom:8px }
+    .receipt .row{ display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed rgba(200,170,170,0.12) }
+    .receipt .row small{ color:#7c6161 }
+    .receipt .receipt-actions{ display:flex; gap:12px; margin-top:14px; justify-content:flex-end }
+    .btn{
+      background:var(--accent-maroon); color:white; border:none; padding:10px 14px; border-radius:8px; font-weight:600; cursor:pointer;
+      box-shadow: 0 6px 18px rgba(122,36,48,0.12);
     }
-    @keyframes drift{
-      0%{ opacity:0; transform: translateY(8px) scale(.6) rotate(0deg) }
-      10%{ opacity:1 }
-      60%{ transform: translateY(-160px) scale(1.05) rotate(8deg); opacity:0.95 }
-      100%{ opacity:0; transform: translateY(-360px) scale(.9) rotate(-6deg) }
+    .btn-ghost{ background:transparent; color:var(--accent-maroon); border:1px solid rgba(122,36,48,0.09) }
+
+    /* print-friendly hidden area */
+    @media print{
+      body *{ visibility:hidden }
+      #print-window, #print-window *{ visibility:visible }
+      #print-window{ position:fixed; left:0; top:0; width:100% }
     }
 
-    /* utility */
     .text-left{ --align:left; text-align:left }
     .text-right{ --align:right; text-align:right }
     .text-center{ --align:center; text-align:center }
 
-    /* subtle responsive typography */
-    @media (max-width:420px){
-      h1{ font-size:42px }
-      .watermark{ font-size:110px }
-      .reason-text{ font-size:18px }
+    @media(max-width:420px){
+      h1{ font-size:42px } .watermark{ font-size:110px } .reason-text{ font-size:18px }
     }
   </style>
 </head>
@@ -188,25 +145,24 @@
   <div class="grain"></div>
   <div class="noise-overlay"></div>
 
-  <div class="card" id="card" onclick="nextSlide()" aria-live="polite" role="region" aria-label="Valentine card">
-    <div class="pagination" id="pagination" aria-hidden="true"><span class="pg-current" id="pg-current">01</span><span class="pg-total"> / 05</span></div>
+  <div class="card" id="card" role="region" aria-label="Valentine card">
+    <div class="pagination" id="pagination" aria-hidden="true"><span class="pg-current" id="pg-current">01</span><span class="pg-total"> / 07</span></div>
 
-    <div class="content" id="content">
-      <div class="content-inner" id="content-inner">
-        <!-- Dynamically filled -->
-      </div>
+    <div class="content" id="content" tabindex="0">
+      <div class="content-inner" id="content-inner"></div>
+      <div class="float-dot" aria-hidden="true"></div>
       <div class="hearts" id="hearts-root" aria-hidden="true"></div>
       <div class="watermark" id="watermark">01</div>
     </div>
 
     <div class="footer">
       <div id="footer-text">Valentine’s Day 2026</div>
-      <div class="hint" id="click-hint">(Tap to open)</div>
+      <div class="hint" id="click-hint">(Tap to open or press Enter)</div>
     </div>
   </div>
 
   <script>
-    /* ==================== Content (poetic, 19th-century subtle style) ==================== */
+    /* ===== Content: cover, reasons (poetic), end (doodle), receipt, appreciation ===== */
     const slides = [
       {
         type:'cover',
@@ -214,178 +170,386 @@
           <span class="label animate-in" style="animation-delay:.05s">A Short List</span>
           <h1 class="animate-in" style="animation-delay:.15s">5 Reasons<br><span class="italic">You Are</span><br>Mine</h1>
           <div class="deco-line animate-in" style="animation-delay:.35s"></div>
+          <div style="height:6px"></div>
         `
       },
       {
-        type:'reason',
-        id:'01',
-        align:'text-left',
-        text: `You turn small hours into my cathedral light...ordinary mornings unroll like a hymn:  
-A kettle sings, a window blinks, and in the hush between breath and coffee I find your name...Kashii  
-soft as a bell in fog anchoring the day like an old, gentle lighthouse.`
+        type:'reason', id:'01', align:'text-left',
+        text:`You turn small hours into cathedral light ... ordinary mornings unroll like a hymn:
+A kettle sings, a window blinks, and in the hush between breath and coffee I find your name, Kashi...
+soft as a bell in fog, anchoring the day like an old, gentle lighthouse.`
       },
       {
-        type:'reason',
-        id:'02',
-        align:'text-right',
-        text: `You are the secret margin where my sentences become true.  
-Like a book kept open beneath moonlight, you lend form to what I half remembered,  
+        type:'reason', id:'02', align:'text-right',
+        text:`You are the secret margin where my sentences become true.
+Like a book kept open beneath moonlight, you lend form to what I half-remembered,
 and with the quiet authority of autumn you rearrange my scattered leaves into meaning.`
       },
       {
-        type:'reason',
-        id:'03',
-        align:'text-left',
-        text: `You move through me like a tide that knows the shore’s small bones:  
-not to sweep me away but to make the harbor wider, to polish the maps I hide.  
-In your wake, the old maps find new names, and even my shadows learn to smile.` ,
-        heartsBurst: true
+        type:'reason', id:'03', align:'text-left', heartsBurst:true,
+        text:`You move through me like a tide that knows the shore’s small bones:
+not to sweep me away but to make the harbor wider, to polish the maps I hide.
+In your wake, the old charts find new names, and even my shadows learn to smile.`
       },
       {
-        type:'reason',
-        id:'04',
-        align:'text-center',
-        text: `You listen as if language were a fragile glass, and every silence you return is gentle enough to hold.  
+        type:'reason', id:'04', align:'text-center',
+        text:`You listen as if language were a fragile glass, and every silence you return is gentle enough to hold.
 There is a patience in you grown like ivy around ruin; it teaches stubborn walls to forgive their cracks.`
       },
       {
-        type:'reason',
-        id:'05',
-        align:'text-left',
-        text: `If life is architecture, you are my best room lit long and kept warm:  
-a window that opens without apology, a table that waits for two hands, a lamp that never questions the hour.  
-With you, all scaffolding feels like shelter.`
+        type:'reason', id:'05', align:'text-left',
+        text:`If life is architecture, you are my best room...lit long and kept warm:
+a window that opens without apology, a table that waits for two hands, a lamp that never questions the hour.
+With you, even scaffolding feels like shelter.`
       },
       {
         type:'end',
         html: `
           <h1 class="animate-in" style="animation-delay:.05s"><span class="italic">Happy</span><br><span class="italic">Valentine's</span></h1>
-          <span class="label animate-in" style="animation-delay:.25s">Forever, with a steady heart</span>
+          <div class="doodle-wrap animate-in" style="animation-delay:.4s">
+            <svg class="doodle-svg" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path id="heartPath" class="path-draw" d="M110 160 C60 130 30 100 50 70 C70 42 110 60 110 90 C110 60 150 42 170 70 C190 100 160 130 110 160 Z"/>
+              <path id="heartFill" class="path-fill" d="M110 160 C60 130 30 100 50 70 C70 42 110 60 110 90 C110 60 150 42 170 70 C190 100 160 130 110 160 Z"/>
+            </svg>
+          </div>
+          <span class="label animate-in" style="animation-delay:.8s">Forever, with a steady heart</span>
+          <div style="height:12px"></div>
+          <div style="display:flex; justify-content:center; gap:12px; margin-top:12px;">
+            <button class="btn animate-in" id="view-receipt" style="animation-delay:1.05s">View Receipt</button>
+            <button class="btn btn-ghost animate-in" id="replay" style="animation-delay:1.05s">Read Again</button>
+          </div>
+        `
+      },
+      {
+        type:'receipt',
+        html: ``
+      },
+      {
+        type:'appreciation',
+        html: `
+          <h1 class="animate-in" style="animation-delay:.05s"><span class="italic">Thank You</span></h1>
+          <div class="label animate-in" style="animation-delay:.18s">For two years, and all the quiet things</div>
+          <div class="reason-text text-left animate-in" style="animation-delay:.3s; opacity:1;">
+            There is a gravity to the ordinary you give me ... a patient constancy that
+            makes heavy days lighter and small mercies larger. I am grateful for your particular
+            courage, for laughter that arrives like summer, and for the way you carry quiet truths.
+            Thank you for being my companion in the small work of living. I love you Kashifa, forever and beyond.
+          </div>
         `
       }
     ];
 
-    /* ==================== DOM refs ==================== */
-    const container = document.getElementById('content-inner');
+    /* ===== DOM refs ===== */
+    const contentInner = document.getElementById('content-inner');
     const pg = document.getElementById('pagination');
     const pgCurrent = document.getElementById('pg-current');
     const hint = document.getElementById('click-hint');
-    const wm = document.getElementById('watermark');
+    const watermark = document.getElementById('watermark');
     const heartsRoot = document.getElementById('hearts-root');
+    const card = document.getElementById('card');
 
-    let idx = 0;
-    render(0);
+    let index = 0;
+    const totalSlides = slides.length; // 8-ish
+    document.querySelector('.pagination .pg-total').textContent = ` / ${String(totalSlides).padStart(2,'0')}`;
 
-    function nextSlide(){
-      // simple guard: animate fade
-      container.classList.add('fade-out');
-      setTimeout(() => {
-        if(idx < slides.length - 1) idx++;
-        else idx = 0;
-        render(idx);
-        container.classList.remove('fade-out');
-      }, 360);
-    }
+    // initial render
+    renderSlide(0);
 
-    function render(i){
-      const s = slides[i];
+    /* ===== navigation: click or keyboard ===== */
+    card.addEventListener('click', (e) => {
+      // if click is on interactive button, let button handle
+      const btn = e.target.closest('button');
+      if(btn) return;
+      // otherwise, if on end slide, prefer user to press "View Receipt" or tap to continue ... but still advance if they tap
+      if(currentSlide().type === 'end') return; // do nothing on generic tap on end ... encourage pressing the explicit button
+      goNext();
+    });
 
-      // pagination visibility
-      if(s.type === 'reason'){
-        pg.style.opacity = '1';
-        pgCurrent.textContent = s.id;
-        hint.textContent = '(Tap for next)';
-      } else {
-        pg.style.opacity = '0';
-        hint.textContent = i === 0 ? '(Tap to open)' : '(Tap to replay)';
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        if(currentSlide().type === 'end') return;
+        goNext();
       }
+      if(e.key === 'ArrowRight') goNext();
+      if(e.key === 'ArrowLeft') goPrev();
+    });
 
-      // watermark text and reveal
-      wm.textContent = s.type === 'reason' ? s.id : '';
-      if(s.type === 'reason'){
-        wm.style.opacity = '0.12';
-        wm.style.transform = 'translateY(0)';
-      } else {
-        wm.style.opacity = '0';
-      }
+    function goNext(){ if(index < slides.length - 1) renderSlide(index + 1); else renderSlide(0) }
+    function goPrev(){ if(index > 0) renderSlide(index - 1); else renderSlide(slides.length - 1) }
+    function currentSlide(){ return slides[index] }
 
-      // clear hearts when not needed
+    /* ===== render logic ===== */
+    function renderSlide(i){
+      // exit transition
+      contentInner.classList.add('content-transition-exit-active');
       clearHearts();
+      // small delay for exit
+      setTimeout(() => {
+        index = i;
+        const s = slides[index];
 
-      // fill content
-      if(s.type === 'cover' || s.type === 'end'){
-        container.innerHTML = s.html;
-        // trigger animate-in children (they already have class)
-        requestAnimationFrame(() => {
-          const ais = container.querySelectorAll('.animate-in');
-          ais.forEach((el, n) => el.style.animationDelay = (n*0.08)+'s');
-        });
-      } else if(s.type === 'reason'){
-        const alignClass = s.align || 'text-left';
-        // escape not necessary here, content is controlled
-        container.innerHTML = `
-          <div class="reason-text ${alignClass} animate-in" id="reason-text">${s.text}</div>
-        `;
-        // show hearts only for slide 03 if defined
-        if(s.heartsBurst){
-          spawnHearts(36); // generate hearts spam
+        // pagination visibility
+        if(s.type === 'reason'){
+          pg.style.opacity = '1';
+          pgCurrent.textContent = s.id.padStart ? s.id.padStart(2,'0') : String(s.id).padStart(2,'0');
+          hint.textContent = '(Tap for next)';
+        } else {
+          pg.style.opacity = '0';
+          hint.textContent = index === 0 ? '(Tap to open or press Enter)' : '(Use buttons or keys)';
         }
-        // small entrance
-        requestAnimationFrame(()=> {
-          const rt = document.getElementById('reason-text');
-          rt.style.opacity = '1';
-          rt.style.transform = 'translateY(0)';
+
+        // watermark
+        if(s.type === 'reason'){ watermark.textContent = s.id; watermark.style.opacity = '0.12'; watermark.style.transform = 'translateY(0)'; }
+        else { watermark.style.opacity = '0'; }
+
+        // fill content
+        if(s.type === 'cover' || s.type === 'end' || s.type === 'receipt' || s.type === 'appreciation'){
+          if(s.type === 'receipt'){
+            // build receipt HTML programmatically
+            contentInner.innerHTML = buildReceiptHTML();
+            attachReceiptHandlers();
+          } else {
+            contentInner.innerHTML = s.html;
+          }
+        } else if(s.type === 'reason'){
+          const alignClass = s.align || 'text-left';
+          contentInner.innerHTML = `
+            <div class="reason-text ${alignClass} animate-in" id="reason-text">${s.text}</div>
+          `;
+          // hearts for special slide
+          if(s.heartsBurst) spawnHearts(36);
+        }
+
+        // run any JS hooks for certain slide types
+        if(s.type === 'end'){
+          // ensure doodle draws when in view ... replace path reflow
+          requestAnimationFrame(() => {
+            const path = document.getElementById('heartPath');
+            const fill = document.getElementById('heartFill');
+            if(path){
+              // reset animation by cloning
+              const newPath = path.cloneNode(true);
+              path.parentNode.replaceChild(newPath, path);
+            }
+            if(fill){
+              const newFill = fill.cloneNode(true);
+              fill.parentNode.replaceChild(newFill, fill);
+            }
+            // attach button handlers
+            const viewBtn = document.getElementById('view-receipt');
+            const replayBtn = document.getElementById('replay');
+            if(viewBtn) viewBtn.addEventListener('click', () => renderSlide(findSlideIndex('receipt')));
+            if(replayBtn) replayBtn.addEventListener('click', () => renderSlide(0));
+          });
+        }
+
+        // show entrance animation
+        requestAnimationFrame(() => {
+          contentInner.classList.remove('content-transition-exit-active');
+          // animate children with stagger
+          const children = contentInner.querySelectorAll('.animate-in, .reason-text, .doodle-wrap, .label, h1, .receipt');
+          children.forEach((el, idx) => {
+            el.style.animationDelay = (idx * 0.07) + 's';
+            el.classList.add('animate-in');
+          });
         });
-      }
+
+      }, 240);
     }
 
-    /* ==================== Hearts generation (for slide 03) ==================== */
+    function findSlideIndex(type){
+      return slides.findIndex(s => s.type === type);
+    }
+
+    /* ===== hearts spawn (slide 3) ===== */
     function spawnHearts(count = 24){
-      // small pool of heart glyphs to vary look
-      const glyphs = ['❤️','💗','💞','❣️','💓'];
-      const w = heartsRoot.clientWidth || (document.querySelector('.card').clientWidth);
-      const h = heartsRoot.clientHeight || (document.querySelector('.card').clientHeight);
+      const glyphs = ['❤️','💗','💞','❣️','💓','💕'];
       for(let i=0;i<count;i++){
         const span = document.createElement('span');
         span.className = 'heart';
         span.textContent = glyphs[Math.floor(Math.random()*glyphs.length)];
-        // random start x within 8%..92%
         const left = Math.random() * 84 + 8;
-        const size = Math.floor(Math.random()*28) + 18; // 18..46px
-        const delay = Math.random() * 0.8; // seconds
-        const dur = 3 + Math.random()*3; // 3..6s
+        const size = Math.floor(Math.random()*28) + 16;
+        const delay = Math.random() * 0.8;
+        const dur = 3 + Math.random()*3;
         span.style.left = left + '%';
-        // start near bottom so they float up
         span.style.bottom = (Math.random()*8 + -6) + '%';
         span.style.fontSize = size + 'px';
         span.style.animationDelay = delay + 's';
         span.style.animationDuration = dur + 's';
-        // slight horizontal jiggle via transform-origin and rotation
         span.style.transform = `translateY(20px) rotate(${(Math.random()*40-20)}deg) scale(.8)`;
         heartsRoot.appendChild(span);
       }
-
-      // auto-clean after animations (~max duration + delay)
+      // cleanup later
       setTimeout(clearHearts, 9000);
     }
+    function clearHearts(){ while(heartsRoot.firstChild) heartsRoot.removeChild(heartsRoot.firstChild); }
 
-    function clearHearts(){
-      while(heartsRoot.firstChild) heartsRoot.removeChild(heartsRoot.firstChild);
+    /* ===== Receipt building + printing ===== */
+    function buildReceiptHTML(){
+      // Simple cute receipt entries. Edit these if you want to personalize.
+      const entries = [
+        {label:'Days together', value:'730'},
+        {label:'Smiles shared', value:'countless'},
+        {label:'Midnight talks', value:'142'},
+        {label:'Coffee dates', value:'87'},
+        {label:'Arguments resolved with hugs', value:'5'},
+        {label:'Inside jokes', value:'too many to list'},
+        {label:'Times I fell more in love', value:'every day'}
+      ];
+
+      // render
+      const rows = entries.map(e => `<div class="row"><div><strong>${escapeHtml(e.label)}</strong><br><small>${escapeHtml(e.label)} ... small note</small></div><div style="text-align:right"><strong>${escapeHtml(e.value)}</strong></div></div>`).join('');
+      const html = `
+        <div class="receipt animate-in">
+          <h3>Receipt of Our Lovely Two Years</h3>
+          <div style="font-size:12px;color:#7c6161;margin-bottom:8px">Issued with gratitude and a slightly overfull heart</div>
+          ${rows}
+          <div style="padding-top:10px; font-size:13px;"><strong>Total:</strong> A life better with you</div>
+          <div class="receipt-actions">
+            <button id="print-btn" class="btn">Print Receipt</button>
+            <button id="done-print" class="btn btn-ghost">Done</button>
+          </div>
+        </div>
+      `;
+      return html;
     }
 
-    // accessibility: allow keyboard to advance
-    document.addEventListener('keydown', (e) => {
-      if(e.key === 'Enter' || e.key === ' '){
-        e.preventDefault();
-        nextSlide();
-      }
-    });
+    function attachReceiptHandlers(){
+      const printBtn = document.getElementById('print-btn');
+      const doneBtn = document.getElementById('done-print');
+      if(printBtn) printBtn.addEventListener('click', handlePrint);
+      if(doneBtn) doneBtn.addEventListener('click', () => {
+        // proceed to appreciation
+        renderSlide(findSlideIndex('appreciation'));
+      });
+    }
 
-    // keep responsive watermark sizing on resize (optional)
-    window.addEventListener('resize', () => {
-      // no-op but available for extension
-    });
+    function handlePrint(){
+      // Build a printable document in a new window to control layout & run print
+      const printableHTML = `
+        <html>
+          <head>
+            <title>Receipt of Our Lovely Two Years</title>
+            <style>
+              body{ font-family: 'Inter', sans-serif; padding:26px; color:#332827 }
+              .wrap{ max-width:680px; margin:0 auto; border:1px solid rgba(122,36,48,0.06); padding:18px; border-radius:10px }
+              h1{ font-family: 'Playfair Display', serif; color: #7A2430; margin-bottom:6px }
+              .row{ display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed rgba(200,170,170,0.12) }
+              .meta{ color:#7c6161; font-size:13px }
+            </style>
+          </head>
+          <body>
+            <div class="wrap" id="print-window">
+              <h1>Receipt of Our Lovely Two Years</h1>
+              <div class="meta">Issued with gratitude ... keep this as proof that you make the world better.</div>
+              <div style="height:8px"></div>
+              <div class="row"><div><strong>Days together</strong></div><div><strong>730</strong></div></div>
+              <div class="row"><div><strong>Smiles shared</strong></div><div><strong>countless</strong></div></div>
+              <div class="row"><div><strong>Midnight talks</strong></div><div><strong>142</strong></div></div>
+              <div class="row"><div><strong>Coffee dates</strong></div><div><strong>87</strong></div></div>
+              <div class="row"><div><strong>Arguments resolved with hugs</strong></div><div><strong>5</strong></div></div>
+              <div style="height:10px"></div>
+              <div style="text-align:right; font-size:13px; color:#7c6161">Total: A life better with you</div>
+            </div>
+            <script>
+              // Ask to print and then close the window
+              setTimeout(()=>{ window.print(); setTimeout(()=>{ window.close(); }, 500); }, 200);
+            <\/script>
+          </body>
+        </html>
+      `;
+      const w = window.open('', '_blank', 'noopener,noreferrer');
+      if(!w){
+        alert('Popup blocked. If nothing happens, allow popups or use the "Done" button and print manually.');
+        return;
+      }
+      w.document.open();
+      w.document.write(printableHTML);
+      w.document.close();
+
+      // after a reasonable delay (since print may be blocking in some browsers), move to appreciation slide
+      setTimeout(() => {
+        renderSlide(findSlideIndex('appreciation'));
+      }, 1200);
+    }
+
+    /* ===== utilities ===== */
+    function escapeHtml(str){ return String(str).replace(/[&<>"']/g, (m)=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]) }
+
+    /* ===== helper: render from index (public) ===== */
+    function renderSlide(i){
+      // used by goNext/goPrev: if given index equals current, do nothing
+      if(i === index && i !== 0) return; // unless it's initial 0
+      // call internal full renderer
+      internalRender(i);
+    }
+
+    function internalRender(i){
+      // small guarded bounds
+      if(i < 0) i = 0;
+      if(i >= slides.length) i = 0;
+      const exiting = contentInner;
+      exiting.classList.add('content-transition-exit-active');
+      clearHearts();
+      setTimeout(()=> {
+        index = i;
+        const s = slides[index];
+
+        // pagination update
+        if(s.type === 'reason'){
+          pg.style.opacity = '1';
+          pgCurrent.textContent = s.id.padStart ? s.id.padStart(2,'0') : String(s.id).padStart(2,'0');
+          hint.textContent = '(Tap for next)';
+        } else {
+          pg.style.opacity = '0';
+          hint.textContent = index === 0 ? '(Tap to open or press Enter)' : '(Use buttons or keys)';
+        }
+
+        // watermark
+        if(s.type === 'reason'){ watermark.textContent = s.id; watermark.style.opacity = '0.12'; watermark.style.transform = 'translateY(0)'; }
+        else { watermark.style.opacity = '0'; }
+
+        // fill content area
+        if(s.type === 'receipt'){
+          contentInner.innerHTML = buildReceiptHTML();
+          attachReceiptHandlers();
+        } else {
+          contentInner.innerHTML = s.html ? s.html : (s.text ? `<div class="reason-text ${s.align||'text-left'} animate-in">${s.text}</div>` : '');
+        }
+
+        // post-render hooks
+        if(s.type === 'reason' && s.heartsBurst) spawnHearts(36);
+        if(s.type === 'end'){
+          // buttons in end slide
+          setTimeout(()=> {
+            // trigger doodle draw by forcing reflow on path
+            const path = document.getElementById('heartPath');
+            if(path){
+              path.style.transition = 'none';
+              path.getBoundingClientRect(); // flush
+              path.style.transition = '';
+            }
+            // attach listeners
+            const view = document.getElementById('view-receipt');
+            const replay = document.getElementById('replay');
+            if(view) view.addEventListener('click', ()=> internalRender(findSlideIndex('receipt')));
+            if(replay) replay.addEventListener('click', ()=> internalRender(0));
+          }, 120);
+        }
+
+        // entrance stagger
+        requestAnimationFrame(()=> {
+          contentInner.classList.remove('content-transition-exit-active');
+          const list = contentInner.querySelectorAll('.animate-in, .reason-text, .receipt, h1, .label, .doodle-wrap');
+          list.forEach((el, n) => { el.style.animationDelay = (n*0.07)+'s'; el.classList.add('animate-in'); });
+        });
+      }, 240);
+    }
+
+    // alias to show initial
+    internalRender(0);
   </script>
 </body>
 </html>
-
