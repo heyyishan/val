@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Top 5 Reasons You're Mine — Poetic</title>
+
+  <!-- Fonts: Playfair Display (serif) + Inter (sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ========== Design tokens (mellow pinkish-maroon scheme) ========== */
+    :root{
+      --bg-canvas: #F4EBED;        /* soft ivory/blush */
+      --card-bg:  #FFF8F8;         /* near-white warm */
+      --accent-maroon: #7A2430;    /* deep maroon (accent) */
+      --accent-dust: #C77B7B;      /* dusty-rose secondary */
+      --muted-char: #332827;       /* dark text */
+      --muted-taupe: #D9CBC8;      /* soft neutrals for lines */
+      --grain: rgba(122,36,48,0.04);
+      --font-serif: 'Playfair Display', serif;
+      --font-sans: 'Inter', sans-serif;
+      --easing: cubic-bezier(0.22,1,0.36,1);
+      --radius: 8px;
+    }
+
+    /* ========== Reset ========== */
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      background: radial-gradient(circle at 10% 10%, #fbf6f7 0%, var(--bg-canvas) 45%), var(--bg-canvas);
+      font-family:var(--font-sans);
+      color:var(--muted-char);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:24px;
+      overflow:hidden;
+    }
+
+    /* subtle paper grain overlay */
+    .grain{
+      position:fixed; inset:0; pointer-events:none; z-index:50;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.6) 0%, transparent 8%),
+                        linear-gradient(transparent, rgba(0,0,0,0.02));
+      mix-blend-mode:overlay;
+      opacity:0.9;
+    }
+    .noise-overlay{
+      position:fixed; inset:0; pointer-events:none; z-index:51;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' fill='%23ffffff' opacity='0.02'/%3E%3C/svg%3E");
+      opacity:0.22;
+    }
+
+    /* ========== Card ========== */
+    .card{
+      width:100%;
+      max-width:460px;
+      height:calc(100vh - 48px);
+      max-height:880px;
+      background: linear-gradient(180deg, var(--card-bg) 0%, #fffefe 100%);
+      border-radius: 14px;
+      box-shadow: 0 30px 60px rgba(44,31,31,0.09);
+      padding:72px 36px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      position:relative;
+      overflow:hidden;
+      cursor:pointer;
+      transition: transform .12s ease;
+      border: 1px solid rgba(122,36,48,0.06);
+    }
+    .card:active{ transform: scale(.995) }
+
+    @media (min-width:900px){
+      .card{ height:80vh; border-radius:16px; padding:80px; }
+    }
+
+    /* top pagination */
+    .pagination{
+      position:absolute; right:28px; top:26px; font-family:var(--font-sans);
+      font-weight:500; font-size:13px; color:var(--muted-char); opacity:0;
+      transition:opacity .45s var(--easing);
+      letter-spacing: .08em;
+    }
+    .pagination .pg-current{ color:var(--accent-maroon); font-weight:700 }
+
+    /* watermark big number behind text */
+    .watermark{
+      position:absolute; left:-8px; top:10%;
+      font-family:var(--font-serif); font-weight:700;
+      font-size:132px; color:var(--muted-taupe);
+      opacity:0; transform: translateY(12px);
+      pointer-events:none; z-index:1;
+    }
+
+    /* content */
+    .content {
+      flex:1; display:flex; align-items:center; justify-content:center; position:relative; z-index:10;
+    }
+    .content-inner{
+      width:100%;
+      max-width:780px;
+      text-align:center;
+      margin: 0 auto;
+      padding: 12px 6px;
+      position:relative;
+    }
+
+    /* Title / cover */
+    .label{
+      display:block; font-family:var(--font-sans); font-size:12px; letter-spacing:.18em;
+      text-transform:uppercase; color:var(--muted-char); margin-bottom:18px;
+    }
+    h1{
+      font-family:var(--font-serif); font-weight:400; font-size:52px; line-height:1.02; color:var(--accent-maroon);
+      margin-bottom:18px; text-align:center;
+    }
+    h1 .italic{ font-style:italic; display:inline-block; color:var(--accent-maroon) }
+
+    .deco-line{ width:2px; height:64px; background:var(--muted-taupe); margin:20px auto; opacity:.9 }
+
+    /* Reason text (poetic) */
+    .reason-text{
+      font-family:var(--font-serif); font-size:20px; line-height:1.6;
+      color:var(--muted-char); max-width:84%; margin: 0 auto;
+      text-align:var(--align, left);
+      white-space:pre-wrap;
+      letter-spacing: .002em;
+      opacity:0; transform:translateY(18px);
+      transition: all 0.6s var(--easing);
+    }
+
+    /* small footer */
+    .footer{
+      text-align:center; font-size:12px; font-family:var(--font-sans);
+      color:var(--muted-char); margin-top:28px; letter-spacing:.14em;
+    }
+    .hint{ font-size:11px; opacity:.6; margin-top:6px; animation:pulse 2.2s infinite; }
+
+    @keyframes pulse{
+      0%{opacity:0.28} 50%{opacity:0.85} 100%{opacity:0.28}
+    }
+
+    /* entrance animations */
+    .animate-in{ animation: fadeInUp .8s var(--easing) forwards; opacity:0 }
+    .fade-out{ animation: fadeOut .35s ease forwards }
+    @keyframes fadeInUp{ from{opacity:0; transform:translateY(18px)} to{opacity:1; transform:none} }
+    @keyframes fadeOut{ from{opacity:1} to{opacity:0; transform:translateY(-8px)} }
+
+    /* hearts container (for slide 03) */
+    .hearts {
+      position:absolute; inset:0; pointer-events:none; z-index:5; overflow:hidden;
+    }
+    .heart {
+      position:absolute; font-size:22px; will-change:transform,opacity;
+      animation: drift 4s linear infinite;
+      opacity:0;
+      transform: translateY(20px) scale(.7);
+      filter: drop-shadow(0 6px 18px rgba(122,36,48,0.18));
+    }
+    @keyframes drift{
+      0%{ opacity:0; transform: translateY(8px) scale(.6) rotate(0deg) }
+      10%{ opacity:1 }
+      60%{ transform: translateY(-160px) scale(1.05) rotate(8deg); opacity:0.95 }
+      100%{ opacity:0; transform: translateY(-360px) scale(.9) rotate(-6deg) }
+    }
+
+    /* utility */
+    .text-left{ --align:left; text-align:left }
+    .text-right{ --align:right; text-align:right }
+    .text-center{ --align:center; text-align:center }
+
+    /* subtle responsive typography */
+    @media (max-width:420px){
+      h1{ font-size:42px }
+      .watermark{ font-size:110px }
+      .reason-text{ font-size:18px }
+    }
+  </style>
+</head>
+<body>
+  <div class="grain"></div>
+  <div class="noise-overlay"></div>
+
+  <div class="card" id="card" onclick="nextSlide()" aria-live="polite" role="region" aria-label="Valentine card">
+    <div class="pagination" id="pagination" aria-hidden="true"><span class="pg-current" id="pg-current">01</span><span class="pg-total"> / 05</span></div>
+
+    <div class="content" id="content">
+      <div class="content-inner" id="content-inner">
+        <!-- Dynamically filled -->
+      </div>
+      <div class="hearts" id="hearts-root" aria-hidden="true"></div>
+      <div class="watermark" id="watermark">01</div>
+    </div>
+
+    <div class="footer">
+      <div id="footer-text">Valentine’s Day 2026</div>
+      <div class="hint" id="click-hint">(Tap to open)</div>
+    </div>
+  </div>
+
+  <script>
+    /* ==================== Content (poetic, 19th-century subtle style) ==================== */
+    const slides = [
+      {
+        type:'cover',
+        html: `
+          <span class="label animate-in" style="animation-delay:.05s">A Short List</span>
+          <h1 class="animate-in" style="animation-delay:.15s">5 Reasons<br><span class="italic">You Are</span><br>Mine</h1>
+          <div class="deco-line animate-in" style="animation-delay:.35s"></div>
+        `
+      },
+      {
+        type:'reason',
+        id:'01',
+        align:'text-left',
+        text: `You turn small hours into my cathedral light...ordinary mornings unroll like a hymn:  
+A kettle sings, a window blinks, and in the hush between breath and coffee I find your name...Kashii  
+soft as a bell in fog anchoring the day like an old, gentle lighthouse.`
+      },
+      {
+        type:'reason',
+        id:'02',
+        align:'text-right',
+        text: `You are the secret margin where my sentences become true.  
+Like a book kept open beneath moonlight, you lend form to what I half remembered,  
+and with the quiet authority of autumn you rearrange my scattered leaves into meaning.`
+      },
+      {
+        type:'reason',
+        id:'03',
+        align:'text-left',
+        text: `You move through me like a tide that knows the shore’s small bones:  
+not to sweep me away but to make the harbor wider, to polish the maps I hide.  
+In your wake, the old maps find new names, and even my shadows learn to smile.` ,
+        heartsBurst: true
+      },
+      {
+        type:'reason',
+        id:'04',
+        align:'text-center',
+        text: `You listen as if language were a fragile glass, and every silence you return is gentle enough to hold.  
+There is a patience in you grown like ivy around ruin; it teaches stubborn walls to forgive their cracks.`
+      },
+      {
+        type:'reason',
+        id:'05',
+        align:'text-left',
+        text: `If life is architecture, you are my best room lit long and kept warm:  
+a window that opens without apology, a table that waits for two hands, a lamp that never questions the hour.  
+With you, all scaffolding feels like shelter.`
+      },
+      {
+        type:'end',
+        html: `
+          <h1 class="animate-in" style="animation-delay:.05s"><span class="italic">Happy</span><br><span class="italic">Valentine's</span></h1>
+          <span class="label animate-in" style="animation-delay:.25s">Forever, with a steady heart</span>
+        `
+      }
+    ];
+
+    /* ==================== DOM refs ==================== */
+    const container = document.getElementById('content-inner');
+    const pg = document.getElementById('pagination');
+    const pgCurrent = document.getElementById('pg-current');
+    const hint = document.getElementById('click-hint');
+    const wm = document.getElementById('watermark');
+    const heartsRoot = document.getElementById('hearts-root');
+
+    let idx = 0;
+    render(0);
+
+    function nextSlide(){
+      // simple guard: animate fade
+      container.classList.add('fade-out');
+      setTimeout(() => {
+        if(idx < slides.length - 1) idx++;
+        else idx = 0;
+        render(idx);
+        container.classList.remove('fade-out');
+      }, 360);
+    }
+
+    function render(i){
+      const s = slides[i];
+
+      // pagination visibility
+      if(s.type === 'reason'){
+        pg.style.opacity = '1';
+        pgCurrent.textContent = s.id;
+        hint.textContent = '(Tap for next)';
+      } else {
+        pg.style.opacity = '0';
+        hint.textContent = i === 0 ? '(Tap to open)' : '(Tap to replay)';
+      }
+
+      // watermark text and reveal
+      wm.textContent = s.type === 'reason' ? s.id : '';
+      if(s.type === 'reason'){
+        wm.style.opacity = '0.12';
+        wm.style.transform = 'translateY(0)';
+      } else {
+        wm.style.opacity = '0';
+      }
+
+      // clear hearts when not needed
+      clearHearts();
+
+      // fill content
+      if(s.type === 'cover' || s.type === 'end'){
+        container.innerHTML = s.html;
+        // trigger animate-in children (they already have class)
+        requestAnimationFrame(() => {
+          const ais = container.querySelectorAll('.animate-in');
+          ais.forEach((el, n) => el.style.animationDelay = (n*0.08)+'s');
+        });
+      } else if(s.type === 'reason'){
+        const alignClass = s.align || 'text-left';
+        // escape not necessary here, content is controlled
+        container.innerHTML = `
+          <div class="reason-text ${alignClass} animate-in" id="reason-text">${s.text}</div>
+        `;
+        // show hearts only for slide 03 if defined
+        if(s.heartsBurst){
+          spawnHearts(36); // generate hearts spam
+        }
+        // small entrance
+        requestAnimationFrame(()=> {
+          const rt = document.getElementById('reason-text');
+          rt.style.opacity = '1';
+          rt.style.transform = 'translateY(0)';
+        });
+      }
+    }
+
+    /* ==================== Hearts generation (for slide 03) ==================== */
+    function spawnHearts(count = 24){
+      // small pool of heart glyphs to vary look
+      const glyphs = ['❤️','💗','💞','❣️','💓'];
+      const w = heartsRoot.clientWidth || (document.querySelector('.card').clientWidth);
+      const h = heartsRoot.clientHeight || (document.querySelector('.card').clientHeight);
+      for(let i=0;i<count;i++){
+        const span = document.createElement('span');
+        span.className = 'heart';
+        span.textContent = glyphs[Math.floor(Math.random()*glyphs.length)];
+        // random start x within 8%..92%
+        const left = Math.random() * 84 + 8;
+        const size = Math.floor(Math.random()*28) + 18; // 18..46px
+        const delay = Math.random() * 0.8; // seconds
+        const dur = 3 + Math.random()*3; // 3..6s
+        span.style.left = left + '%';
+        // start near bottom so they float up
+        span.style.bottom = (Math.random()*8 + -6) + '%';
+        span.style.fontSize = size + 'px';
+        span.style.animationDelay = delay + 's';
+        span.style.animationDuration = dur + 's';
+        // slight horizontal jiggle via transform-origin and rotation
+        span.style.transform = `translateY(20px) rotate(${(Math.random()*40-20)}deg) scale(.8)`;
+        heartsRoot.appendChild(span);
+      }
+
+      // auto-clean after animations (~max duration + delay)
+      setTimeout(clearHearts, 9000);
+    }
+
+    function clearHearts(){
+      while(heartsRoot.firstChild) heartsRoot.removeChild(heartsRoot.firstChild);
+    }
+
+    // accessibility: allow keyboard to advance
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        nextSlide();
+      }
+    });
+
+    // keep responsive watermark sizing on resize (optional)
+    window.addEventListener('resize', () => {
+      // no-op but available for extension
+    });
+  </script>
+</body>
+</html>
+
